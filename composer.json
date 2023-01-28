@@ -1,0 +1,26 @@
+{
+    "name": "antto/sms",
+    "description": "sms",
+    "license": "MIT",
+    "require": {
+        "overtrue/easy-sms": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Antto\\Sms\\": "src/",
+            "Antto\\Sms\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Antto\\Sms\\SmsServiceProvider"
+            ],
+            "aliases": {
+                "Sms": "Antto\\Sms\\Facades\\Sms"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
