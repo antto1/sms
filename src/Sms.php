@@ -190,7 +190,7 @@ class Sms
      *
      * @return bool
      */
-    public function verifyCode($to, $code)
+    public function verifyCode($to, $inputCode)
     {
         $key = $this->getKey($to);
 
@@ -200,7 +200,7 @@ class Sms
             return false;
         }
 
-        if (isset($code['code']) && $code['code'] == $code) {
+        if (isset($code['code']) && $code['code'] == $inputCode) {
             cache()->forget($key);
 
             return true;
