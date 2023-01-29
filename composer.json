@@ -1,7 +1,14 @@
 {
     "name": "antto/sms",
-    "description": "sms",
+    "description": "laravel sms",
+    "type": "library",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Antto",
+            "email": "info@anttoweb.com"
+        }
+    ],
     "require": {
         "overtrue/easy-sms": "^2.3"
     },
