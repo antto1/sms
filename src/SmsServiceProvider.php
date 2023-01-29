@@ -3,6 +3,7 @@
 namespace Antto\Sms;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 
 class SmsServiceProvider extends ServiceProvider
 {
@@ -38,10 +39,8 @@ class SmsServiceProvider extends ServiceProvider
             __DIR__ . '/../database/migrations/' => database_path('migrations')
         ], 'sms-migrations');
 
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'sms');
-
-        $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/sms'),
-        ], 'sms-lang');
+        Validator::extend('is_mobile', 'Antto\Sms\Validator@isMobile');
+        Validator::extend('can_send', 'Antto\Sms\Validator@canSend');
+        Validator::extend('verify_code', 'Antto\Sms\Validator@verifyCode');
     }
 }

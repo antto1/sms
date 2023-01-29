@@ -10,12 +10,11 @@ php artisan vendor:publish --tag=sms-config
 
 # 发布迁移（*如需数据库记录发送日志）
 php artisan vendor:publish --tag=sms-migrations
-
-# 发布翻译
-php artisan vendor:publish --tag=sms-lang
 ```
 
 ## 使用
+
+### 示例
 
 ```php
 <?php
@@ -23,10 +22,7 @@ php artisan vendor:publish --tag=sms-lang
 namespace App\Http\Controllers;
 
 use Antto\Sms\Facades\Sms;
-use Antto\Sms\Rules\CanSend;
 use Illuminate\Http\Request;
-use Antto\Sms\Rules\IsMobile;
-use Antto\Sms\Rules\VerifyCode;
 
 class TestController extends Controller
 {
@@ -50,7 +46,11 @@ class TestController extends Controller
     public function sendVerifyCode(Request $request)
     {
         $request->validate([
-            'mobile' => ['required', new IsMobile, new CanSend],
+            'mobile' => 'required|is_mobile|can_send',
+        ], [
+            'mobile.required' => '手机号不能为空',
+            'mobile.is_mobile' => '手机号格式不正确',
+            'mobile.can_send' => '验证码发送过于频繁',
         ]);
 
         if (Sms::sendVerifyCode($request->mobile)) {
@@ -70,8 +70,8 @@ class TestController extends Controller
     public function verifyCode(Request $request)
     {
         $request->validate([
-            'mobile' => ['required', new IsMobile],
-            'code' => ['required', new VerifyCode($request->mobile)],
+            'mobile' => 'required|is_mobile',
+            'code' => 'required|verify_code:' . $request->mobile,
         ]);
 
         // ...
@@ -86,3 +86,9 @@ class TestController extends Controller
 }
 
 ```
+
+### 表单验证
+
+- is_mobile 验证手机号格式
+- can_send 是否可发送，例如60秒内是否可重发
+- verify_code 验证码是否正确，接受一个参数：手机号

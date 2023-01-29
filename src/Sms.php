@@ -15,6 +15,16 @@ class Sms
     }
 
     /**
+     * 获取 EasySms
+     *
+     * @return \Overtrue\EasySms\EasySms
+     */
+    public function getEasySms()
+    {
+        return $this->easySms;
+    }
+
+    /**
      * 发送短信
      *
      * @param string|array                                       $to 手机号码
@@ -120,6 +130,34 @@ class Sms
     }
 
     /**
+     * 获取验证码
+     *
+     * @param string $to 手机号
+     *
+     * @return string|null
+     */
+    public function getCode($to)
+    {
+        $cache = cache()->get($this->getKey($to));
+
+        return $cache['code'] ?? null;
+    }
+
+    /**
+     * 获取验证码发送时间
+     *
+     * @param string $to 手机号
+     *
+     * @return int|null
+     */
+    public function getCodeSentAt($to)
+    {
+        $cache = cache()->get($this->getKey($to));
+
+        return $cache['sent_at'] ?? null;
+    }
+
+    /**
      * 获取缓存 key
      *
      * @param string $to 手机号
@@ -189,22 +227,23 @@ class Sms
      *
      * @param $to 手机号
      * @param $code 验证码
+     * @param $forget 验证正确后是否删除缓存
      *
      * @return bool
      */
-    public function verifyCode($to, $inputCode)
+    public function verifyCode($to, $inputCode, $forget = true)
     {
         $key = $this->getKey($to);
-
-        $code = cache()->get($key, '');
+        $code = $this->getCode($to);
 
         if (empty($code)) {
             return false;
         }
 
-        if (isset($code['code']) && $code['code'] == $inputCode) {
-            cache()->forget($key);
-
+        if ($code == $inputCode) {
+            if ($forget) {
+                cache()->forget($key);
+            }
             return true;
         }
 
