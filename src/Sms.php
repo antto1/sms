@@ -37,15 +37,17 @@ class Sms
         } catch (NoGatewayAvailableException $noGatewayAvailableException) {
             $results = $noGatewayAvailableException->results;
             $flag = false;
+            report($noGatewayAvailableException);
         } catch (\Exception $exception) {
             $results = $exception->getMessage();
             $flag = false;
+            report($exception);
         }
 
         // 记录短信日志
         if (config('sms.dblog.enable') && Schema::hasTable(config('sms.dblog.table'))) {
             try {
-                \DB::table('sms_log')->insert([
+                \DB::table(config('sms.dblog.table'))->insert([
                     'mobile' => $to,
                     'data' => json_encode($message),
                     'is_sent' => $flag,
