@@ -130,6 +130,18 @@ class Sms
     }
 
     /**
+     * 清除验证码
+     *
+     * @param string $to 手机号
+     *
+     * @return void
+     */
+    public function forgetCode($to)
+    {
+        cache()->forget($this->getKey($to));
+    }
+
+    /**
      * 获取验证码
      *
      * @param string $to 手机号
@@ -232,7 +244,6 @@ class Sms
      */
     public function verifyCode($to, $inputCode, $forget = true)
     {
-        $key = $this->getKey($to);
         $code = $this->getCode($to);
 
         if (empty($code)) {
@@ -241,7 +252,7 @@ class Sms
 
         if ($code == $inputCode) {
             if ($forget) {
-                cache()->forget($key);
+                $this->forgetCode($to);
             }
             return true;
         }
