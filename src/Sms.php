@@ -148,7 +148,7 @@ class Sms
      *
      * @param string $to 手机号
      *
-     * @return int|null
+     * @return int|null 时间戳
      */
     public function getCodeSentAt($to)
     {
@@ -198,10 +198,9 @@ class Sms
      */
     public function canSend($to)
     {
-        $code = cache()->get($this->getKey($to), '');
-        $sent_at = $code['sent_at'] ?? 0;
+        $sent_at = $this->getCodeSentAt($to);
 
-        if (empty($code) || time() - $sent_at > config('sms.code.interval', 60)) {
+        if (time() - $sent_at > config('sms.code.interval', 60)) {
             return true;
         }
 
