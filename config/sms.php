@@ -2,6 +2,7 @@
 
 // config for antto/sms
 return [
+    // 模板变量名：code 和 minutes
     'code' => [
         'template' => '', // 验证码模板
         'length' => 5, // 验证码长度
@@ -31,6 +32,15 @@ return [
         'gateways' => [
             'errorlog' => [
                 'file' => storage_path('logs/sms.log'),
+            ],
+
+            /**
+             * 云信使
+             */
+            'YunXinShi' => [
+                'apiUrl' => 'http://api.sms.cn/sms/',
+                'uid'    => '',
+                'pwd'    => '',
             ],
         ],
     ],

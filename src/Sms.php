@@ -3,6 +3,7 @@
 namespace Antto\Sms;
 
 use Illuminate\Support\Facades\Schema;
+use Antto\Sms\Gateways\YunXinShiGateway;
 use Overtrue\EasySms\Exceptions\NoGatewayAvailableException;
 
 class Sms
@@ -12,6 +13,11 @@ class Sms
     public function __construct()
     {
         $this->easySms = new \Overtrue\EasySms\EasySms(config('sms.easy_sms'));
+        // YunXinShiGateway
+        $this->easySms->extend('YunXinShi', function ($config) {
+            // $config 来自配置文件里的 `gateways.YunXinShi`
+            return new YunXinShiGateway($config);
+        });
     }
 
     /**
@@ -59,9 +65,9 @@ class Sms
             try {
                 \DB::table(config('sms.dblog.table'))->insert([
                     'mobile' => $to,
-                    'data' => json_encode($message),
+                    'data' => json_encode($message, JSON_UNESCAPED_UNICODE),
                     'is_sent' => $flag,
-                    'result' => json_encode($results),
+                    'result' => json_encode($results, JSON_UNESCAPED_UNICODE),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
